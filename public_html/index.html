@@ -1,0 +1,60 @@
+<html> 
+<head> 
+<meta charset="utf-8"> 
+<title>Книга рецептов</title> 
+</head> 
+
+<body> 
+<style> 
+.text1 { 
+text-align: center; 
+} 
+</style> 
+
+<script> 
+function search() { 
+
+var ingridient = document.getElementById("ing").value; 
+var name = document.getElementById("name").value; 
+
+var request = new XMLHttpRequest(); 
+var url = 'http://www.recipepuppy.com/api/?'; 
+if(ingridient !== "") { 
+url = url + 'i=' + ingridient + '&'; 
+} 
+if (name !== "") { 
+url = url + 'q=' + name; 
+} 
+
+request.open('GET', url , true); 
+request.setRequestHeader('Access-Control-Allow-Headers', '*'); 
+
+request.onload = function() { 
+var obj = JSON.parse(request.response); 
+var min_element = null; 
+obj['results'].forEach(function(element) { 
+if(min_element === null){ 
+min_element = element; 
+min_element['ingredients']; 
+} else if(min_element['ingredients'].split(',').length > 
+element['ingredients'].split(',').length){ 
+min_element = element; 
+} 
+}); 
+document.writeln( "<pre>" + 'Название блюда: ' + min_element['title'] + 
+'\n' + 'Ингридиенты: ' + min_element['ingredients'] + 
+'\n' + 'Ссылка на рецепт: ' + min_element['href']+ "<\/pre>"); 
+}; 
+request.send(); 
+} 
+</script> 
+
+<div class="text1"><h1>Для поиска рецепта введите:</h1> 
+<b>Ингридиенты:</b> <input id="ing"> 
+или 
+<b>название блюда:</b> <input id="name"> 
+<button onclick="search()">Поиск</button> 
+</div> 
+</body> 
+
+</html>
